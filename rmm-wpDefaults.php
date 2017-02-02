@@ -1,8 +1,8 @@
 <?php
 /*
-Plugin Name: RMM - WordPress Initial Settings
+Plugin Name: RMM - wp Defaults
 Plugin URI:
-Description: My preferred default configuration settings. See 'wp-admin/options.php' for more options.
+Description: My preferred default plugins and WP Options.  Use with a clean install, install plugins for development then keep active until development is complete.
 Version: 1
 Author: Ryan Mitchell
 Author URI: http://rmitchellmedia.com
@@ -91,5 +91,107 @@ function all_settings_link() {
 add_action('admin_menu', 'all_settings_link');
 
 
+//Require Plugins using TGM Plugin Activation
 
+require_once dirname( __FILE__ ) . '/class-tgm-plugin-activation.php';
+
+add_action( 'tgmpa_register', 'rmm_wpDefaults_register_required_plugins' );
+function rmm_wpDefaults_register_required_plugins()
+{
+    /*
+     * Array of plugin arrays. Required keys are name and slug.
+     * If the source is NOT from the .org repo, then source is also required.
+     */
+    $plugins = array(
+
+        array(
+            'name' => 'Advanced Custom Fields Pro', // The plugin name.
+            'slug' => 'advanced-custom-fields-pro', // The plugin slug (typically the folder name).
+            'source' => 'https://connect.advancedcustomfields.com/index.php?p=pro&a=download&k=b3JkZXJfaWQ9NjI4MzV8dHlwZT1wZXJzb25hbHxkYXRlPTIwMTUtMDgtMjYgMjM6MTg6MzE=', // The plugin source.
+            'required' => false, // If false, the plugin is only 'recommended' instead of required.
+            'external_url' => 'https://www.advancedcustomfields.com/my-account/', // If set, overrides default API URL and points to an external URL.
+        ),
+
+        array(
+            'name' => 'acf-fancy-repeater-field',
+            'slug' => 'acf-fancy-repeater-field',
+            'source' => 'https://github.com/lucasstark/acf-fancy-repeater-field/archive/master.zip',
+            'external_url' => 'https://github.com/lucasstark/acf-fancy-repeater-field',
+            'force_activation'  => true,
+        ),
+
+        array(
+            'name' => 'ACF Content Analysis for Yoast SEO',
+            'slug' => 'acf-content-analysis-for-yoast-seo',
+            'required' => false,
+        ),
+
+        array(
+            'name' => 'Simple Page Ordering',
+            'slug' => 'simple-page-ordering',
+            'required' => false,
+        ),
+
+        array(
+            'name' => 'Velvet Blues Update URLs',
+            'slug' => 'velvet-blues-update-urls',
+            'required' => false,
+        ),
+        array(
+            'name' => 'WP Sync DB',
+            'slug' => 'wp-sync-db',
+            'source' => 'https://github.com/wp-sync-db/wp-sync-db/archive/master.zip',
+            'external_url' => 'http://wp-sync-db.github.io/',
+            'force_activation'  => true,
+        ),
+        array(
+            'name' => 'Debug Bar',
+            'slug' => 'debug-bar',
+            'required' => false,
+        ),
+
+        array(
+            'name' => 'Regenerate Thumbnails',
+            'slug' => 'regenerate-thumbnails',
+            'required' => false,
+        ),
+
+        array(
+            'name' => 'User Switching',
+            'slug' => 'user-switching',
+            'required' => false,
+        ),
+
+        array(
+            'name' => 'Query Monitor',
+            'slug' => 'query-monitor',
+            'required' => false,
+        ),
+
+        array(
+            'name' => 'Monster Widget',
+            'slug' => 'monster-widget',
+            'required' => false,
+            'external_url' => 'https://wordpress.org/plugins/monster-widget/',
+        ),
+    );
+
+
+    $config = array(
+        'id' => 'rmm-wpDefaults',                       // Unique ID for hashing notices for multiple instances of TGMPA.
+        'default_path' => '',                           // Default absolute path to bundled plugins.
+        'menu' => 'tgmpa-install-plugins',              // Menu slug.
+        'parent_slug' => 'plugins.php',                 // Parent menu slug.
+        'capability' => 'manage_options',               // Capability needed to view plugin install page, should be a capability associated with the parent menu used.
+        'has_notices' => true,                          // Show admin notices or not.
+        'dismissable' => false,                          // If false, a user cannot dismiss the nag message.
+        'dismiss_msg' => 'Uninstall Dev plugins and before launch',                            // If 'dismissable' is false, this message will be output at top of nag.
+        'is_automatic' => false,                        // Automatically activate plugins after installation or not.
+        'message' => '',                                // Message to output right before the plugins table.
+
+
+    );
+
+    tgmpa( $plugins, $config );
+}
 ?>
